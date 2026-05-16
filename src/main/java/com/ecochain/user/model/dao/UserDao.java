@@ -81,4 +81,25 @@ public class UserDao {
             return st.executeUpdate() > 0;
         }
     }
+
+    public static boolean updateUser(int userId, String fullName, String email) throws SQLException {
+        String query = "UPDATE users SET full_name = ?, email = ? WHERE id = ?";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement st = conn.prepareStatement(query)) {
+            st.setString(1, fullName);
+            st.setString(2, email);
+            st.setInt(3, userId);
+            return st.executeUpdate() > 0;
+        }
+    }
+
+    public static boolean updatePassword(int userId, String newPassword) throws SQLException {
+        String query = "UPDATE users SET password = ? WHERE id = ?";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement st = conn.prepareStatement(query)) {
+            st.setString(1, PasswordManager.hashPassword(newPassword));
+            st.setInt(2, userId);
+            return st.executeUpdate() > 0;
+        }
+    }
 }

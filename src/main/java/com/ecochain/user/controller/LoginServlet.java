@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import com.ecochain.utils.SchemaSetup;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -20,6 +22,7 @@ public class LoginServlet extends HttpServlet {
     public void init() throws ServletException {
         try {
             UserDao.installAdmin();
+            SchemaSetup.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
