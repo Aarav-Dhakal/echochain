@@ -38,11 +38,17 @@ public class AdminServlet extends HttpServlet {
                 int pendingUsers = AdminDao.getPendingUsers();
                 int totalListings = AdminDao.getTotalListings();
                 int totalPickups = AdminDao.getTotalPickups();
+                double totalFoodRescued = AdminDao.getTotalFoodRescued();
+                double totalCO2Saved = AdminDao.getTotalCO2Saved();
+                int totalMealsServed = AdminDao.getTotalMealsServed();
 
                 req.setAttribute("totalUsers", totalUsers);
                 req.setAttribute("pendingUsers", pendingUsers);
                 req.setAttribute("totalListings", totalListings);
                 req.setAttribute("totalPickups", totalPickups);
+                req.setAttribute("totalFoodRescued", totalFoodRescued);
+                req.setAttribute("totalCO2Saved", totalCO2Saved);
+                req.setAttribute("totalMealsServed", totalMealsServed);
 
                 req.getRequestDispatcher("/pages/admin/dashboard.jsp").forward(req, resp);
 
@@ -55,6 +61,10 @@ public class AdminServlet extends HttpServlet {
                 List<String> categories = AdminDao.fetchAllCategories();
                 req.setAttribute("categories", categories);
                 req.getRequestDispatcher("/pages/admin/category-management.jsp").forward(req, resp);
+            } else if ("/listings".equals(path)) {
+                List<com.ecochain.listing.model.Listing> listings = com.ecochain.listing.model.dao.ListingDao.fetchAllListings();
+                req.setAttribute("listings", listings);
+                req.getRequestDispatcher("/pages/admin/listing-moderation.jsp").forward(req, resp);
             }
 
         } catch (Exception e) {
@@ -101,6 +111,11 @@ public class AdminServlet extends HttpServlet {
                 int categoryId = Integer.parseInt(req.getParameter("categoryId"));
                 AdminDao.deleteCategory(categoryId);
                 resp.sendRedirect("/admin/categories");
+
+            } else if ("deleteListing".equals(action)) {
+                int listingId = Integer.parseInt(req.getParameter("listingId"));
+                com.ecochain.listing.model.dao.ListingDao.deleteListing(listingId);
+                resp.sendRedirect("/admin/listings");
             }
 
         } catch (Exception e) {
