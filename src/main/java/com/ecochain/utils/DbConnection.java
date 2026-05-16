@@ -4,9 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+// Utility class to handle database connection
 public class DbConnection {
-    // Database URL (connecting to MySQL database "learning_logs")
-    static String URL = "jdbc:mysql://localhost:3306/learninglog";
+
+    static String URL = "jdbc:mysql://localhost:3306/ecochain";
 
     // Database username
     static String USER = "root";

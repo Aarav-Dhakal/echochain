@@ -144,4 +144,24 @@ public class AdminDao {
             return rowsAffected > 0;
         }
     }
+
+    public static double getTotalFoodRescued() throws SQLException {
+        String query = "SELECT SUM(quantity) FROM pickups WHERE status = 'completed'";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement st = conn.prepareStatement(query)) {
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        }
+        return 0;
+    }
+
+    public static double getTotalCO2Saved() throws SQLException {
+        return getTotalFoodRescued() * 2.5;
+    }
+
+    public static int getTotalMealsServed() throws SQLException {
+        return (int) (getTotalFoodRescued() * 2.5);
+    }
 }
