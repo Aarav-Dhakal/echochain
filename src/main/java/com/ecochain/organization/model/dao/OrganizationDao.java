@@ -69,4 +69,18 @@ public class OrganizationDao {
         }
         return 0;
     }
+
+    public static boolean updateOrganization(Organization org) throws SQLException {
+        String query = "UPDATE organizations SET org_name = ?, address = ?, phone = ?, area_of_service = ?, reg_certificate = ? WHERE user_id = ?";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement st = conn.prepareStatement(query)) {
+            st.setString(1, org.getOrgName());
+            st.setString(2, org.getAddress());
+            st.setString(3, org.getPhone());
+            st.setString(4, org.getAreaOfService());
+            st.setString(5, org.getRegCertificate());
+            st.setInt(6, org.getUserId());
+            return st.executeUpdate() > 0;
+        }
+    }
 }
