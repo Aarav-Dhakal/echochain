@@ -15,8 +15,15 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 
-@WebServlet("/picup")
+@WebServlet("/pickup/*")
 public class PickupServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        // Redirect to dashboard or browse if accessed via GET
+        resp.sendRedirect("/organization/browse");
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -28,12 +35,13 @@ public class PickupServlet extends HttpServlet {
             return;
         }
 
+        String path = req.getPathInfo();
         String action = req.getParameter("action");
 
         try {
             Organization org = OrganizationDao.fetchOrganizationByUserId(user.getId());
 
-            if ("requestPickup".equals(action)) {
+            if ("/request".equals(path) || "requestPickup".equals(action)) {
                 int listingId = Integer.parseInt(req.getParameter("listingId"));
 
                 Pickup pickup = new Pickup();
