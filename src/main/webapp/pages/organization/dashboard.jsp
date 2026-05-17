@@ -7,100 +7,82 @@
         response.sendRedirect("/login");
         return;
     }
-    Organization org = (Organization) request.getAttribute("org");
+    Organization organization = (Organization) request.getAttribute("org");
+    if (organization == null && user.getRole().equals("organization")) {
+        // If org is not in request, try to handle it (maybe redirected from an error)
+        // For now, if it's missing and we're not already redirecting, we should probably check if we need to complete profile
+    }
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Organization Dashboard</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f0f4f0; }
-        .navbar {
-            background: #2e7d32;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .navbar h1 { font-size: 22px; }
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            font-size: 14px;
-        }
-        .container { padding: 30px; }
-        h2 { color: #2e7d32; margin-bottom: 25px; }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .stat-card h3 { font-size: 36px; color: #2e7d32; }
-        .stat-card p { color: #666; font-size: 14px; margin-top: 8px; }
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        .quick-link-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #2e7d32;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            margin-top: 10px;
-        }
-    </style>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Organization Dashboard - EcoChain</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css"/>
 </head>
 <body>
-<div class="navbar">
-    <h1>🌿 EcoChain Organization</h1>
-    <div>
-        <a href="/organization/dashboard">Dashboard</a>
-        <a href="/organization/browse">Browse Listings</a>
-        <a href="/logout">Logout</a>
-    </div>
-</div>
-<div class="container">
-    <h2>Welcome, <%= org.getOrgName() %>!</h2>
-    <div class="stats">
-        <div class="stat-card">
-            <h3><%= request.getAttribute("totalRequests") %></h3>
-            <p>Total Requests</p>
+<div class="dash-layout">
+    <aside class="sidebar">
+        <div class="sidebar-logo"><i class="fas fa-leaf" style="color: var(--primary); font-size: 20px;"></i><span>EcoChain</span></div>
+        <nav>
+            <a href="${pageContext.request.contextPath}/organization/dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="${pageContext.request.contextPath}/organization/browse"><i class="fas fa-search"></i> Browse Listings</a>
+            <a href="${pageContext.request.contextPath}/organization/my-requests"><i class="fas fa-tasks"></i> My Requests</a>
+        </nav>
+        <div class="sidebar-footer"><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+    </aside>
+
+    <main class="dash-main">
+        <div class="dash-header">
+            <div>
+                <h1>Welcome, <%= organization != null ? organization.getOrgName() : "User" %>!</h1>
+                <p class="sub">Your organization activity overview</p>
+            </div>
+            <a href="/organization/profile" class="user-avatar" title="Profile Settings"><i class="fas fa-user-circle"></i></a>
         </div>
-        <div class="stat-card">
-            <h3><%= request.getAttribute("completedPickups") %></h3>
-            <p>Completed Pickups</p>
+
+        <% String error = (String) request.getAttribute("error");
+            if (error != null) { %>
+        <div class="alert alert-danger" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid #fecaca;">
+            <strong>Error:</strong> <%= error %>
         </div>
-        <div class="stat-card">
-            <h3><%= String.format("%.2f", org.getTotalFoodReceived()) %> kg</h3>
-            <p>Total Food Received</p>
+        <% } %>
+
+        <% if (organization != null) { %>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-paper-plane"></i></div>
+                <h3><%= request.getAttribute("totalRequests") %></h3>
+                <p>Total Requests</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-check-double"></i></div>
+                <h3><%= request.getAttribute("completedPickups") %></h3>
+                <p>Completed Pickups</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="fas fa-weight-hanging"></i></div>
+                <h3><%= String.format("%.2f", organization.getTotalFoodReceived()) %> kg</h3>
+                <p>Total Food Received</p>
+            </div>
         </div>
-    </div>
-    <div class="quick-links">
-        <div class="quick-link-card">
-            <h3>Browse Listings</h3>
-            <p>Find available food donations.</p>
-            <a href="/organization/browse" class="btn">Browse</a>
+        <% } %>
+
+        <div class="quick-grid">
+            <div class="quick-card">
+                <h3><i class="fas fa-search" style="color: var(--primary); margin-right: 8px;"></i> Browse Listings</h3>
+                <p>Find available food donations from local businesses and restaurants.</p>
+                <a href="/organization/browse" class="btn-primary">Browse</a>
+            </div>
+            <div class="quick-card">
+                <h3><i class="fas fa-clipboard-check" style="color: var(--info); margin-right: 8px;"></i> My Requests</h3>
+                <p>Track and manage your pickup requests and delivery status.</p>
+                <a href="/organization/my-requests" class="btn-primary">View Requests</a>
+            </div>
         </div>
-    </div>
+    </main>
 </div>
 </body>
 </html>

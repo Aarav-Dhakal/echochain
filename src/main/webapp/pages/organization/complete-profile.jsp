@@ -8,101 +8,52 @@
   }
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Complete Profile</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .container {
-      background: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 500px;
-    }
-    h2 { color: #2e7d32; margin-bottom: 20px; text-align: center; }
-    .form-group { margin-bottom: 20px; }
-    label {
-      display: block;
-      margin-bottom: 6px;
-      color: #333;
-      font-weight: bold;
-      font-size: 14px;
-    }
-    input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    .btn {
-      width: 100%;
-      padding: 12px;
-      background: #2e7d32;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .error {
-      background: #ffebee;
-      color: #c62828;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-  </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complete Profile - EcoChain</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css"/>
 </head>
 <body>
-<div class="container">
-  <h2>Complete Your Organization Profile</h2>
+<div class="auth-page">
+  <div class="auth-card">
+    <a href="${pageContext.request.contextPath}/" class="auth-logo" style="display: block; text-decoration: none;">
+      <i class="fas fa-leaf" style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"></i>
+      <h1>EcoChain</h1>
+      <p>Complete Your Organization Profile</p>
+    </a>
 
-  <% if (request.getAttribute("error") != null) { %>
-  <div class="error"><%= request.getAttribute("error") %></div>
-  <% } %>
+    <% if (request.getAttribute("error") != null) { %>
+    <div class="alert alert-error"><%= request.getAttribute("error") %></div>
+    <% } %>
 
-  <form action="/organization/complete-profile" method="post">
-    <input type="hidden" name="action" value="completeProfile"/>
-
-    <div class="form-group">
-      <label>Organization Name</label>
-      <input type="text" name="orgName" placeholder="Shelter / Food Bank name" required />
-    </div>
-
-    <div class="form-group">
-      <label>Address</label>
-      <input type="text" name="address" placeholder="Organization address" required />
-    </div>
-
-    <div class="form-group">
-      <label>Phone</label>
-      <input type="text" name="phone" placeholder="Contact phone number" required />
-    </div>
-
-    <div class="form-group">
-      <label>Area of Service</label>
-      <input type="text" name="areaOfService" placeholder="e.g., Downtown, City Center" required />
-    </div>
-
-    <div class="form-group">
-      <label>Registration Certificate</label>
-      <input type="text" name="regCertificate" placeholder="Registration number" required />
-    </div>
-
-    <button type="submit" class="btn">Complete Profile</button>
-  </form>
+    <form action="/organization/complete-profile" method="post">
+      <input type="hidden" name="action" value="completeProfile"/>
+      <div class="form-group">
+        <label for="orgName">Organization Name</label>
+        <input type="text" id="orgName" name="orgName" placeholder="Shelter / Food Bank name" required/>
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address" placeholder="Organization address" required/>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" name="phone" placeholder="Contact phone number" required/>
+      </div>
+      <div class="form-group">
+        <label for="areaOfService">Area of Service</label>
+        <input type="text" id="areaOfService" name="areaOfService" placeholder="e.g., Downtown, City Center" required/>
+      </div>
+      <div class="form-group">
+        <label for="regCertificate">Registration Certificate</label>
+        <input type="text" id="regCertificate" name="regCertificate" placeholder="Registration number" required/>
+      </div>
+      <button type="submit" class="btn-submit" style="width:100%;padding:12px;font-size:15px;">Complete Profile</button>
+    </form>
+  </div>
 </div>
 </body>
 </html>
