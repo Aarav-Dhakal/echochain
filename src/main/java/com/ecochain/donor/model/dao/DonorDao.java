@@ -35,11 +35,25 @@ public class DonorDao {
                 String address = rs.getString("address");
                 String licenseNumber = rs.getString("license_number");
                 String phone = rs.getString("phone");
-                double reputationScore = rs.getDouble("reputation_score");
+                double reputationScore = getReputationScore(id);
                 return new Donor(id, userId, businessName, address, licenseNumber, phone, reputationScore);
             }
         }
         return null;
+    }
+
+    public static double getReputationScore(int donorId) throws SQLException {
+        String query = "SELECT AVG(rating) FROM ratings WHERE donor_id = ?";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement st = conn.prepareStatement(query)) {
+            st.setInt(1, donorId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                double score = rs.getDouble(1);
+                return score > 0 ? score : 5.0; // Default to 5.0 if no ratings yet
+            }
+        }
+        return 5.0;
     }
 
     public static int getTotalListings(int donorId) throws SQLException {
@@ -66,5 +80,18 @@ public class DonorDao {
             }
         }
         return 0;
+    }
+
+    public static boolean updateDonor(Donor donor) throws SQLException {
+        String query = "UPDATE donors SET business_name = ?, address = ?, license_number = ?, phone = ? WHERE user_id = ?";
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement st = conn.prepareStatement(query)) {
+            st.setString(1, donor.getBusinessName());
+            st.setString(2, donor.getAddress());
+            st.setString(3, donor.getLicenseNumber());
+            st.setString(4, donor.getPhone());
+            st.setInt(5, donor.getUserId());
+            return st.executeUpdate() > 0;
+        }
     }
 }
